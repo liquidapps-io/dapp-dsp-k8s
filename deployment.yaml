@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: eos1
+  namespace: eos
+spec:
+  serviceName: "eos-mainet"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eos1
+  template:
+    metadata:
+      labels:
+        app: eos1
+    spec:
+      initContainers:
+      - name: download
+        image: aravindgv/eos2:eos-v2.1
+        command: ["/bin/bash","-c","wget https://snapshots.eosnation.io/eos-v5/latest -O /blockchain/snapshot.zst" ]
+        volumeMounts:
+        - mountPath: /blockchain
+          name: eos-data
+      - name: extract
+        image: aravindgv/eos2:eos-v2.1
+        command: ["/bin/bash","-c", "rm -f /blockchain/snapshot ; unzstd /blockchain/snapshot.zst" ]
+        volumeMounts:
+        - mountPath: /blockchain
+          name: eos-data
+      containers:
+      - name: eos
+        image: aravindgv/eos2:eoskylin-v2.1
+        imagePullPolicy: Always
+        command: ["/bin/bash","-c","nodeos --delete-all-blocks --config-dir /blockchain/config --data-dir /blockchain/data --snapshot /blockchain/snapshot"]
+        volumeMounts:
+        - name: eos-data
+          mountPath: /blockchain
+      nodeSelector:
+        topology.kubernetes.io/zone: ap-south-1b
+        workload: eos
+      volumes:
+      - name: eos-data
+        awsElasticBlockStore:
+          volumeID: "Put your Volume ID"
+      - name: config-volume
+      configMap:
+        # Provide the name of the ConfigMap containing the files you just created
+        # to add to the container
+        name: eos-config
