@@ -25,3 +25,6 @@ kubectl apply -f deployment.yaml
 ````
 Only thing to make sure here is the persistent disks. In this YAML file I have used Cloud EBS Volumes. 
 Depending upon your Setup.
+
+
+### IPFS
