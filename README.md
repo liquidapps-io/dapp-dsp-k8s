@@ -1,30 +1,15 @@
 # liquidapps
 
-## EOSIO Node
+Setting up DSP on Kubernetes has four major sections.
 
-Step-1
+Go to each folder and to get kubernetes manifest and steps to setup each node.
 
-Creating Configmap 
-Create config.ini file using [liquidapps-docs](https://docs.liquidapps.io/en/v2.0/dsps/eosio-node.html#configuration)
+1. EOS 
 
+2. Postgress Database
 
-Use the kubectl create configmap command to create ConfigMaps
+3. IPFS
 
-### Create the configmap
-```
-kubectl create configmap eos-config --from-file=config.ini
-```
-
-Step-2
-
-### Applying EOS Manifest file to lauch new EOS Pod
-
-```
-kubectl apply -f deployment.yaml
-
-````
-Only thing to make sure here is the persistent disks. In this YAML file I have used Cloud EBS Volumes. 
-Depending upon your Setup.
+4. DSP
 
 
-### IPFS

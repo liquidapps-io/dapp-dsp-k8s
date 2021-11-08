@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: dsp
+spec:
+  serviceName: "dsp"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dsp
+  template:
+    metadata:
+      labels:
+        app: dsp
+    spec:
+      containers:
+      - name: dsp-container
+        image: aravindgv/dsp:2.0.7420-latest
+        resources:
+          requests:
+            memory: "4G"
+            cpu: "2"
+          limits:
+            memory: "4G"
+            cpu: "2"
+        #command: ["/bin/sh","-ec","while true; do echo JSR ; sleep 05 ; done"]
+        #command: ["/bin/bash","-ec","cd /root/.nvm/versions/node/v10.16.3/lib/node_modules/@liquidapps/dsp/zeus_boxes ; /root/.nvm/versions/node/v10.16.3/bin/setup-dsp ; tail -f /root/.pm2/logs/*log*"]
+        command: ["/bin/bash","-ec","cd /usr/local/lib/node_modules/@liquidapps/dsp/zeus_boxes/ ; setup-dsp ; tail -f /root/.pm2/logs/*log*"]
+        ports:
+        - containerPort: 3115
+          name: dsp-http
+        volumeMounts:
+        - name: data
+          mountPath: "/root/.dsp"
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: dsp1

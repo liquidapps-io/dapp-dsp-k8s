@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ipfs-mainnet
+  labels:
+    name: ipfs-mainnet
+spec:
+  ports:
+    - port: 5001
+      targetPort: 5001
+      name: ipfs-api
+    - port: 8080
+      targetPort: 8080
+      name: ipfs-http
+  selector:
+    app: ipfs-mainnet

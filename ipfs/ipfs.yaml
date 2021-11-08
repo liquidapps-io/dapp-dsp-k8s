@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ipfs-mainnet
+spec:
+  serviceName: "ipfs-mainnet"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ipfs-mainnet
+  template:
+    metadata:
+      labels:
+        app: ipfs-mainnet
+    spec:
+      containers:
+      - name: ipfs
+        image: aravindgv/dsp:ipfs-latest
+        imagePullPolicy: Always
+        command: [ "/bin/bash","-c","/usr/local/bin/ipfs daemon"]
+        #command: ["/bin/bash","-ec","while true; do echo JSR... ; sleep 05 ; done"]
+        ports:
+        - containerPort: 5001
+          name: ipfs
+        - containerPort: 8080
+          name: ipfs-http
+        volumeMounts:
+        - name: ipfs-data
+          mountPath: "/root/.ipfs"
+      volumes:
+      - name: ipfs-data
+        persistentVolumeClaim:
+          claimName: ipfs
